@@ -15,6 +15,7 @@ export class AppRoot extends LitElement {
     selectedIds: { type: Object },
     searchQuery: { type: String },
     theme: { type: String },
+    noteView: { type: String },
     currentNote: { type: Object }
   };
 
@@ -74,6 +75,7 @@ export class AppRoot extends LitElement {
     this.selectedIds = new Set(notesStore.selectedIds);
     this.searchQuery = notesStore.searchQuery;
     this.theme = notesStore.theme;
+    this.noteView = notesStore.noteView;
     this.currentNote = notesStore.getCurrentNote();
   }
 
@@ -103,6 +105,7 @@ export class AppRoot extends LitElement {
             .notes="${this.notes}"
             .selectedIds="${this.selectedIds}"
             .searchQuery="${this.searchQuery}"
+            .noteView="${this.noteView}"
           ></view-home>
         `;
       case 'write':
@@ -121,6 +124,7 @@ export class AppRoot extends LitElement {
         return html`
           <view-settings
             .theme="${this.theme}"
+            .noteView="${this.noteView}"
           ></view-settings>
         `;
       default:

@@ -92,6 +92,18 @@ export class ViewWrite extends LitElement {
         transition: transform 0.61s cubic-bezier(0.4, 0, 0.2, 1), filter 0.75s ease-out, background-color 0.3s ease-out;
       }
 
+      .write-action-button {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg);
+        color: var(--text);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
       .write-actions button:active {
         background: var(--surf-low);
         transform: none;
@@ -101,6 +113,10 @@ export class ViewWrite extends LitElement {
 
       .write-actions button.primary {
         color: var(--primary);
+      }
+
+      .image-input {
+        display: none;
       }
     `
   ];
@@ -124,6 +140,24 @@ export class ViewWrite extends LitElement {
     }
   }
 
+  handleImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file || !file.type.startsWith('image/')) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const contentInput = this.shadowRoot.getElementById('write-content');
+      const start = contentInput.selectionStart;
+      const end = contentInput.selectionEnd;
+      const imageMarkdown = `![${file.name}](${reader.result})`;
+      contentInput.value = `${contentInput.value.slice(0, start)}${imageMarkdown}${contentInput.value.slice(end)}`;
+      contentInput.focus();
+      contentInput.selectionStart = contentInput.selectionEnd = start + imageMarkdown.length;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  }
+
   render() {
     const title = this.note ? this.note.title : '';
     const tag = this.note ? this.note.tag : '';
@@ -135,6 +169,8 @@ export class ViewWrite extends LitElement {
       <textarea id="write-content" placeholder="Ketik idemu... Markdown, $LaTeX$, atau link(id).nama() disupport penuh." .value="${content}"></textarea>
       <div class="write-actions">
         <button @click="${this.handleCancel}">Batal</button>
+        <label for="image-upload" class="write-action-button">Tambah Gambar</label>
+        <input class="image-input" id="image-upload" type="file" accept="image/*" @change="${this.handleImageUpload}">
         <button class="primary" @click="${this.handleSave}">Simpan</button>
       </div>
     `;

@@ -104,6 +104,14 @@ export class ViewRead extends LitElement {
         word-break: break-all;
       }
 
+      #read-compiled img {
+        display: block;
+        max-width: 100%;
+        height: auto;
+        border-radius: var(--radius-m);
+        margin: 16px 0;
+      }
+
       .reader-link {
         color: var(--primary);
         text-decoration: none;

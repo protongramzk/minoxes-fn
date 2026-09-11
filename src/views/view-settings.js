@@ -7,7 +7,8 @@ import '../components/ui-button.js';
 
 export class ViewSettings extends LitElement {
   static properties = {
-    theme: { type: String }
+    theme: { type: String },
+    noteView: { type: String }
   };
 
   static styles = [
@@ -42,11 +43,47 @@ export class ViewSettings extends LitElement {
         width: 100%;
         margin-top: 16px;
       }
+
+      .setting-item select {
+        background: var(--surf-low);
+        color: var(--text);
+        border: 1px solid var(--outline);
+        border-radius: var(--radius-s);
+        padding: 10px 12px;
+        font: inherit;
+      }
+
+      .view-options {
+        display: flex;
+        gap: 6px;
+      }
+
+      .view-options button {
+        border: 1px solid var(--outline);
+        background: var(--surf-low);
+        color: var(--text);
+        border-radius: var(--radius-s);
+        padding: 10px 14px;
+        cursor: pointer;
+      }
+
+      .view-options button.active {
+        background: var(--primary);
+        color: var(--on-primary);
+      }
     `
   ];
 
   handleToggleTheme() {
     notesStore.toggleTheme();
+  }
+
+  handleThemeChange(e) {
+    notesStore.setTheme(e.target.value);
+  }
+
+  handleViewChange(view) {
+    notesStore.setNoteView(view);
   }
 
   handleExportZip() {
@@ -58,15 +95,24 @@ export class ViewSettings extends LitElement {
   }
 
   render() {
-    const isDark = this.theme === 'dark';
-
     return html`
       <div class="setting-item">
-        <span>Mode Tampilan</span>
-        <ui-button @click="${this.handleToggleTheme}">
-          <ui-icon name="${isDark ? 'light_mode' : 'dark_mode'}"></ui-icon>
-          ${isDark ? 'Terang' : 'Gelap'}
-        </ui-button>
+        <span>Tema</span>
+        <select aria-label="Pilih tema" .value="${this.theme}" @change="${this.handleThemeChange}">
+          <option value="dark">Dark</option>
+          <option value="light">Light</option>
+          <option value="nord">Nord</option>
+          <option value="orange-dark">Orange Dark</option>
+          <option value="violet-dark">Violet Dark</option>
+          <option value="emerald-dark">Emerald Dark</option>
+        </select>
+      </div>
+      <div class="setting-item">
+        <span>Tampilan Notes</span>
+        <div class="view-options">
+          <button class="${this.noteView === 'list' ? 'active' : ''}" @click="${() => this.handleViewChange('list')}">List</button>
+          <button class="${this.noteView === 'grid' ? 'active' : ''}" @click="${() => this.handleViewChange('grid')}">Grid</button>
+        </div>
       </div>
       <div class="setting-item">
         <span>Ekspor ZIP Backup</span>

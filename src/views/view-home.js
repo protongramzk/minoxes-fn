@@ -9,6 +9,7 @@ export class ViewHome extends LitElement {
     notes: { type: Array },
     selectedIds: { type: Object },
     searchQuery: { type: String }
+    ,noteView: { type: String }
   };
 
   static styles = [
@@ -34,6 +35,10 @@ export class ViewHome extends LitElement {
         display: grid;
         grid-template-columns: 1fr;
         gap: 12px;
+      }
+
+      .grid.grid-view {
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       }
     `
   ];
@@ -76,7 +81,7 @@ export class ViewHome extends LitElement {
     const filteredNotes = this.notes || [];
 
     return html`
-      <div class="grid">
+      <div class="grid ${this.noteView === 'grid' ? 'grid-view' : ''}">
         ${filteredNotes.map((note, index) => html`
           <ui-card
             .note="${note}"

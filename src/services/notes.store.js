@@ -9,6 +9,11 @@ class NotesStore extends EventTarget {
     this.selectedIds = new Set();
     this.searchQuery = '';
     this.theme = storageService.getTheme();
+    this.noteView = storageService.getNoteView();
+    this.ready = storageService.loadNotes().then(notes => {
+      this.notes = notes;
+      this.notify();
+    });
   }
 
   notify() {
@@ -27,8 +32,15 @@ class NotesStore extends EventTarget {
   }
 
   toggleTheme() {
-    const nextTheme = this.theme === 'dark' ? 'light' : 'dark';
+    const themes = ['dark', 'light', 'nord', 'orange-dark', 'violet-dark', 'emerald-dark'];
+    const nextTheme = themes[(themes.indexOf(this.theme) + 1) % themes.length];
     this.setTheme(nextTheme);
+  }
+
+  setNoteView(view) {
+    this.noteView = view === 'grid' ? 'grid' : 'list';
+    storageService.saveNoteView(this.noteView);
+    this.notify();
   }
 
   initTheme() {
